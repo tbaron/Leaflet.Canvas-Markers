@@ -2,6 +2,11 @@
 Leaflet plugin for displaying markers on canvas instead of DOM. Working with Leaflet 1.0.0 and above.
 Feel free to contribute
 
+## Fork Differences
+Following features have been added for personal projects:
+
+* Ability to display permanent tooltips to use as labels
+
 ## Demo
 
 There's a [demo](http://eJuke.github.io/Leaflet.Canvas-Markers/examples/index.html) for 10000 points, running on Canvas

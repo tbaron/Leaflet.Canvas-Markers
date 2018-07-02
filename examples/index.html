@@ -32,7 +32,8 @@
     </div>
     <div class="map" id="map"></div>
   </div>
-  <script src="https://unpkg.com/leaflet-canvas-marker@0.2.0"></script>
+  <script src="https://unpkg.com/rbush@2.0.1/rbush.min.js"></script>
+  <script src="../src/plugin/leaflet.canvas-markers.js"></script>
   <script>
     var map = L.map('map').setView([59.9578,30.2987], 10);
     var tiles = L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
@@ -53,7 +54,7 @@
 
   var markers = [];
     for (var i = 0; i < 10000; i++) {
-      var marker = L.marker([58.5578 + Math.random()*1.8, 29.0087 + Math.random()*3.6], {icon: icon}).bindPopup("I Am "+i);
+      var marker = L.marker([58.5578 + Math.random()*1.8, 29.0087 + Math.random()*3.6], {icon: icon}).bindPopup("I Am "+i).bindTooltip(i, {permanent: true, direction: "bottom", offset: [-2, 5]});
     markers.push(marker);
     }
   ciLayer.addLayers(markers);

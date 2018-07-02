@@ -1,6 +1,19 @@
 'use strict';
 
-function layerFactory(L) {
+(function (factory, window){
+  if (typeof define === 'function' && define.amd) {
+    // Define AMD module
+    define(['leaflet'], factory);
+  } else if (typeof exports === 'object') {
+    // Define a Common JS module
+    module.exports = factory(require('leaflet'));
+  }
+
+  // Attach plugin to a global variable
+  if (typeof window !== 'undefined' && window.L) {
+    window.L.CanvasIconLayer = factory(L);
+  }
+}(function (L){
 
     var CanvasIconLayer = (L.Layer ? L.Layer : L.Class).extend({
 
@@ -252,19 +265,46 @@ function layerFactory(L) {
                     }
                 }
             }
+
         },
 
         _drawImage: function (marker, pointPos) {
 
             var options = marker.options.icon.options;
 
+            var xImage = pointPos.x - options.iconAnchor[0];
+            var yImage = pointPos.y - options.iconAnchor[1];
+
             this._context.drawImage(
                 marker.canvas_img,
-                pointPos.x - options.iconAnchor[0],
-                pointPos.y - options.iconAnchor[1],
+                xImage,
+                yImage,
                 options.iconSize[0],
                 options.iconSize[1]
             );
+
+            var hasTooltip = marker.getTooltip()
+            if (hasTooltip && hasTooltip.options.permanent) {
+                var xDirectionOffset = 0;
+                var yDirectionOffset = 0;
+                var offset = hasTooltip.options.offset;
+                switch (hasTooltip.options.direction) {
+                    case "top":
+                        yDirectionOffset = -options.iconSize[1];
+                        break;
+                    case "right":
+                        xDirectionOffset = options.iconSize[0];
+                        break;
+                    case "bottom":
+                        yDirectionOffset = options.iconSize[1];
+                        break;
+                    case "left":
+                        xDirectionOffset = -options.iconSize[0];
+                        break;
+                }
+                console.log(hasTooltip)
+                this._context.fillText(hasTooltip._content, xImage + xDirectionOffset + offset[0], pointPos.y + yDirectionOffset + offset[1]);
+            }
         },
 
         _reset: function () {
@@ -376,7 +416,6 @@ function layerFactory(L) {
             var y = event.containerPoint.y;
 
             if(me._openToolTip) {
-
                 me._openToolTip.closeTooltip();
                 delete me._openToolTip;
             }
@@ -397,12 +436,12 @@ function layerFactory(L) {
 
                 if (event.type==="mousemove") {
                     var hasTooltip = ret[0].data.getTooltip();
-                    if(hasTooltip) {
+                    if (hasTooltip && !hasTooltip.options.permanent) {
                         me._openToolTip = ret[0].data;
                         ret[0].data.openTooltip();
-                    }
 
-                    me._onHoverListeners.forEach(function (listener) { listener(event, ret); });
+                        me._onHoverListeners.forEach(function (listener) { listener(event, ret); });
+                    }
                 }
             }
             else {
@@ -415,6 +454,4 @@ function layerFactory(L) {
     L.canvasIconLayer = function (options) {
         return new CanvasIconLayer(options);
     };
-};
-
-module.exports = layerFactory;
+}, window));
