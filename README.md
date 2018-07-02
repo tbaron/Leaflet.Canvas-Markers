@@ -6,6 +6,7 @@ Feel free to contribute
 Following features have been added for personal projects:
 
 * Ability to display permanent tooltips to use as labels
+* Better zooming animation
 
 ## Demo
 

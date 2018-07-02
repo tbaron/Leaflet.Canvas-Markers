@@ -386,8 +386,6 @@
         _initCanvas: function () {
 
             this._canvas = L.DomUtil.create('canvas', 'leaflet-canvas-icon-layer leaflet-layer');
-            var originProp = L.DomUtil.testProp(['transformOrigin', 'WebkitTransformOrigin', 'msTransformOrigin']);
-            this._canvas.style[originProp] = '50% 50%';
 
             var size = this._map.getSize();
             this._canvas.width = size.x;
@@ -397,6 +395,43 @@
 
             var animated = this._map.options.zoomAnimation && L.Browser.any3d;
             L.DomUtil.addClass(this._canvas, 'leaflet-zoom-' + (animated ? 'animated' : 'hide'));
+
+            // Extracted from https://github.com/Sumbera/gLayers.Leaflet/
+            /* L.CanvasLayer.js :
+             Licensed under MIT
+             Copyright (c) 2016 Stanislav Sumbera, 
+             http://blog.sumbera.com/2014/04/20/leaflet-canvas/
+             
+             Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files
+             (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, 
+             copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software,
+             and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+             The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+             
+             THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+             INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. 
+             IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+             WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE
+             OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+            */
+            if (animated) {
+                var that = this;
+                map.on('zoomanim', function(e) {
+                    var scale = that._map.getZoomScale(e.zoom);
+                    // -- different calc of animation zoom  in leaflet 1.0.3 thanks @peterkarabinovic, @jduggan1
+                    var offset = L.Layer ? that._map._latLngBoundsToNewLayerBounds(that._map.getBounds(), e.zoom, e.center).min :
+                                           that._map._getCenterOffset(e.center)._multiplyBy(-scale).subtract(that._map._getMapPanePos());
+
+                    var pos = offset || new L.Point(0, 0);
+
+                    that._canvas.style[L.DomUtil.TRANSFORM] =
+                  (L.Browser.ie3d ?
+                    'translate(' + pos.x + 'px,' + pos.y + 'px)' :
+                    'translate3d(' + pos.x + 'px,' + pos.y + 'px,0)') +
+                  (scale ? ' scale(' + scale + ')' : '');
+                });
+            }
         },
 
         addOnClickListener: function (listener) {
