@@ -519,4 +519,6 @@
     L.canvasIconLayer = function(options) {
         return new CanvasIconLayer(options);
     };
+
+    return L.canvasIconLayer;
 }, window);
