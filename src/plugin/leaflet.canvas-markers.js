@@ -3,17 +3,17 @@
 (function(factory, window) {
     if (typeof define === "function" && define.amd) {
         // Define AMD module
-        define(["leaflet"], factory);
+        define(["leaflet", "rbush"], factory);
     } else if (typeof exports === "object") {
         // Define a Common JS module
-        module.exports = factory(require("leaflet"));
+        module.exports = factory(require("leaflet"), require("rbush"));
     }
 
     // Attach plugin to a global variable
-    if (typeof window !== "undefined" && window.L) {
-        window.L.CanvasIconLayer = factory(L);
+    if (typeof window !== "undefined" && window.L && window.rbush) {
+        window.L.CanvasIconLayer = factory(L, rbush);
     }
-})(function(L) {
+})(function(L, rbush) {
     var CanvasIconLayer = (L.Layer ? L.Layer : L.Class).extend({
         //Add event listeners to initialized section.
         initialize: function(options) {
@@ -40,7 +40,7 @@
             markers.forEach(function(marker) {
                 if (
                     !(
-                        marker.options.pane == "markerPane" &&
+                        marker.options.pane === "markerPane" &&
                         marker.options.icon
                     )
                 ) {
@@ -76,7 +76,7 @@
         },
 
         addLayer: function(layer) {
-            if (layer.options.pane == "markerPane" && layer.options.icon)
+            if (layer.options.pane === "markerPane" && layer.options.icon)
                 this.addMarker(layer);
             else console.error("Layer isn't a marker");
         },
