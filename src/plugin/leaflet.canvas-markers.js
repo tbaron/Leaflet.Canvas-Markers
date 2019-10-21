@@ -432,7 +432,7 @@
             */
             if (animated) {
                 var that = this;
-                map.on("zoomanim", function(e) {
+                this._map.on("zoomanim", function(e) {
                     var scale = that._map.getZoomScale(e.zoom);
                     // -- different calc of animation zoom  in leaflet 1.0.3 thanks @peterkarabinovic, @jduggan1
                     var offset = L.Layer
