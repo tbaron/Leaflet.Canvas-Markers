@@ -20,6 +20,7 @@
             L.setOptions(this, options);
             this._onClickListeners = [];
             this._onHoverListeners = [];
+            this._debug = options.debug;
         },
 
         setOptions: function(options) {
@@ -259,51 +260,63 @@
         },
 
         _drawImage: function(marker, pointPos) {
-            var options = marker.options.icon.options;
+            const iconOptions = marker.options.icon.options;
 
-            if (!options.iconAnchor) {
-                options.iconAnchor = [0, 0];
+            if (!iconOptions.iconAnchor) {
+                iconOptions.iconAnchor = [0, 0];
             }
 
-            var xImage = pointPos.x - options.iconAnchor[0];
-            var yImage = pointPos.y - options.iconAnchor[1];
+            const xImage = pointPos.x - iconOptions.iconAnchor[0];
+            const yImage = pointPos.y - iconOptions.iconAnchor[1];
+
+            if (this._debug) {
+                const adj_x = iconOptions.iconSize[0] / 2;
+                const adj_y = iconOptions.iconSize[1] / 2;
+
+                this._context.fillRect(
+                    pointPos.x - adj_x,
+                    pointPos.y - adj_y,
+                    2 * adj_x,
+                    2 * adj_y
+                );
+            }
 
             this._context.drawImage(
                 marker._icon,
                 xImage,
                 yImage,
-                options.iconSize[0],
-                options.iconSize[1]
+                iconOptions.iconSize[0],
+                iconOptions.iconSize[1]
             );
 
             if (marker.hasShadow) {
                 this._context.drawImage(
                     marker._shadowIcon,
-                    pointPos.x - options.shadowAnchor[0],
-                    pointPos.y - options.shadowAnchor[1],
-                    options.shadowSize[0],
-                    options.shadowSize[1]
+                    pointPos.x - iconOptions.shadowAnchor[0],
+                    pointPos.y - iconOptions.shadowAnchor[1],
+                    iconOptions.shadowSize[0],
+                    iconOptions.shadowSize[1]
                 );
             }
 
-            var hasTooltip = marker.getTooltip();
+            const hasTooltip = marker.getTooltip();
             if (hasTooltip && hasTooltip.options.permanent) {
-                var xDirectionOffset = 0;
-                var yDirectionOffset = 0;
-                var offset = hasTooltip.options.offset;
+                let xDirectionOffset = 0;
+                let yDirectionOffset = 0;
+                let offset = hasTooltip.options.offset;
 
                 switch (hasTooltip.options.direction) {
                     case "top":
-                        yDirectionOffset = -options.iconSize[1];
+                        yDirectionOffset = -iconOptions.iconSize[1];
                         break;
                     case "right":
-                        xDirectionOffset = options.iconSize[0];
+                        xDirectionOffset = iconOptions.iconSize[0];
                         break;
                     case "bottom":
-                        yDirectionOffset = options.iconSize[1];
+                        yDirectionOffset = iconOptions.iconSize[1];
                         break;
                     case "left":
-                        xDirectionOffset = -options.iconSize[0];
+                        xDirectionOffset = -iconOptions.iconSize[0];
                         break;
                 }
 
@@ -491,8 +504,10 @@
                 me._map._container.style.cursor = "pointer";
 
                 if (event.type === "click") {
-                    var hasPopup = ret[0].data.getPopup();
-                    if (hasPopup) ret[0].data.openPopup();
+                    const hasPopup = ret[0].data.getPopup();
+                    if (hasPopup) {
+                        ret[0].data.openPopup();
+                    }
 
                     me._onClickListeners.forEach(function(listener) {
                         listener(event, ret);
