@@ -91,15 +91,15 @@
         },
 
         removeMarker: function(marker, redraw) {
-            var self = this;
+            const self = this;
 
             //If we are removed point
             if (marker["minX"]) marker = marker.data;
 
-            var latlng = marker.getLatLng();
-            var isDisplaying = self._map.getBounds().contains(latlng);
+            const latlng = marker.getLatLng();
+            const isDisplaying = self._map && self._map.getBounds().contains(latlng);
 
-            var markerData = {
+            const markerData = {
                 minX: latlng.lng,
                 minY: latlng.lat,
                 maxX: latlng.lng,
