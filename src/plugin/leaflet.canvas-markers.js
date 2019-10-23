@@ -21,6 +21,7 @@
             this._onClickListeners = [];
             this._onHoverListeners = [];
             this._debug = options.debug;
+            this._canvasSize = { x: 0, y: 0 };
         },
 
         setOptions: function(options) {
@@ -97,7 +98,8 @@
             if (marker["minX"]) marker = marker.data;
 
             const latlng = marker.getLatLng();
-            const isDisplaying = self._map && self._map.getBounds().contains(latlng);
+            const isDisplaying =
+                self._map && self._map.getBounds().contains(latlng);
 
             const markerData = {
                 minX: latlng.lng,
@@ -329,27 +331,34 @@
         },
 
         _reset: function() {
-            var topLeft = this._map.containerPointToLayerPoint([0, 0]);
+            const topLeft = this._map.containerPointToLayerPoint([0, 0]);
             L.DomUtil.setPosition(this._canvas, topLeft);
 
-            var size = this._map.getSize();
+            const size = this._map.getSize();
 
-            this._canvas.width = size.x;
-            this._canvas.height = size.y;
+            if (
+                size.x !== this._canvasSize.x ||
+                size.y !== this._canvasSize.y
+            ) {
+                this._canvas.width = size.x;
+                this._canvas.height = size.y;
+                this._canvasSize = size;
+            }
 
-            this._redraw();
+            this._redraw(true);
         },
 
         _redraw: function(clear) {
             var self = this;
 
-            if (clear)
+            if (clear) {
                 this._context.clearRect(
                     0,
                     0,
                     this._canvas.width,
                     this._canvas.height
                 );
+            }
             if (!this._map || !this._latlngMarkers) return;
 
             var tmp = [];
