@@ -386,7 +386,11 @@
                 maxY: mapBounds.getNorth()
             };
 
-            self._latlngMarkers.search(mapBoxCoords).forEach(function(e) {
+            self._latlngMarkers.search(mapBoxCoords).sort(
+					function(a, b) {
+						return (a.data.zIndex > b.data.zIndex) ? 1
+								: ((b.data.zIndex > a.data.zIndex) ? -1 : 0);
+					}).forEach(function(e) {
                 //Readjust Point Map
                 var pointPos = self._map.latLngToContainerPoint(
                     e.data.getLatLng()

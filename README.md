@@ -4,10 +4,7 @@ Feel free to contribute
 
 ## Fork Differences
 Following features have been added for personal projects:
-
-* Ability to display permanent tooltips to use as labels
-* Better zooming animation
-* Icon shadow support
+Add support for Z-Index
 
 ## Demo
 
