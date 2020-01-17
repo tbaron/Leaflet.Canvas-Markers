@@ -177,15 +177,21 @@
 
             var pointPos = self._map.latLngToContainerPoint(latlng);
             var iconSize = marker.options.icon.options.iconSize;
+			const iconOptions = marker.options.icon.options;
 
-            var adj_x = iconSize[0] / 2;
-            var adj_y = iconSize[1] / 2;
+            if (!iconOptions.iconAnchor) {
+                iconOptions.iconAnchor = [0, 0];
+            }
+
+            const xImage = pointPos.x - iconOptions.iconAnchor[0];
+            const yImage = pointPos.y - iconOptions.iconAnchor[1];
+
             var ret = [
                 {
-                    minX: pointPos.x - adj_x,
-                    minY: pointPos.y - adj_y,
-                    maxX: pointPos.x + adj_x,
-                    maxY: pointPos.y + adj_y,
+                    minX: xImage ,
+                    minY: yImage ,
+                    maxX: xImage +  iconSize[0],
+                    maxY: yImage +  iconSize[1],
                     data: marker
                 },
                 {
@@ -272,14 +278,12 @@
             const yImage = pointPos.y - iconOptions.iconAnchor[1];
 
             if (this._debug) {
-                const adj_x = iconOptions.iconSize[0] / 2;
-                const adj_y = iconOptions.iconSize[1] / 2;
 
                 this._context.fillRect(
-                    pointPos.x - adj_x,
-                    pointPos.y - adj_y,
-                    2 * adj_x,
-                    2 * adj_y
+                    xImage ,
+                    yImage ,
+                    iconOptions.iconSize[0],
+                    iconOptions.iconSize[1],
                 );
             }
 
@@ -399,12 +403,20 @@
                 var iconSize = e.data.options.icon.options.iconSize;
                 var adj_x = iconSize[0] / 2;
                 var adj_y = iconSize[1] / 2;
+				const iconOptions = e.data.options.icon.options;
+
+                if (!iconOptions.iconAnchor) {
+                    iconOptions.iconAnchor = [0, 0];
+                }
+
+                const xImage = pointPos.x - iconOptions.iconAnchor[0];
+                const yImage = pointPos.y - iconOptions.iconAnchor[1];
 
                 var newCoords = {
-                    minX: pointPos.x - adj_x,
-                    minY: pointPos.y - adj_y,
-                    maxX: pointPos.x + adj_x,
-                    maxY: pointPos.y + adj_y,
+                    minX: xImage ,
+                    minY: yImage ,
+                    maxX: xImage +  iconSize[0],
+                    maxY: yImage +  iconSize[1],
                     data: e.data
                 };
 
