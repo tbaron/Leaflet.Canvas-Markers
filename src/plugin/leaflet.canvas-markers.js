@@ -471,29 +471,31 @@
             if (animated) {
                 var that = this;
                 this._map.on("zoomanim", function(e) {
-                    var scale = that._map.getZoomScale(e.zoom);
-                    // -- different calc of animation zoom  in leaflet 1.0.3 thanks @peterkarabinovic, @jduggan1
-                    var offset = L.Layer
-                        ? that._map._latLngBoundsToNewLayerBounds(
-                              that._map.getBounds(),
-                              e.zoom,
-                              e.center
-                          ).min
-                        : that._map
-                              ._getCenterOffset(e.center)
-                              ._multiplyBy(-scale)
-                              .subtract(that._map._getMapPanePos());
+					if (that._map!=null){
+						var scale = that._map.getZoomScale(e.zoom);
+						// -- different calc of animation zoom  in leaflet 1.0.3 thanks @peterkarabinovic, @jduggan1
+						var offset = L.Layer
+							? that._map._latLngBoundsToNewLayerBounds(
+								  that._map.getBounds(),
+								  e.zoom,
+								  e.center
+							  ).min
+							: that._map
+								  ._getCenterOffset(e.center)
+								  ._multiplyBy(-scale)
+								  .subtract(that._map._getMapPanePos());
 
-                    var pos = offset || new L.Point(0, 0);
+						var pos = offset || new L.Point(0, 0);
 
-                    that._canvas.style[L.DomUtil.TRANSFORM] =
-                        (L.Browser.ie3d
-                            ? "translate(" + pos.x + "px," + pos.y + "px)"
-                            : "translate3d(" +
-                              pos.x +
-                              "px," +
-                              pos.y +
-                              "px,0)") + (scale ? " scale(" + scale + ")" : "");
+						that._canvas.style[L.DomUtil.TRANSFORM] =
+							(L.Browser.ie3d
+								? "translate(" + pos.x + "px," + pos.y + "px)"
+								: "translate3d(" +
+								  pos.x +
+								  "px," +
+								  pos.y +
+								  "px,0)") + (scale ? " scale(" + scale + ")" : "");
+						}
                 });
             }
         },
