@@ -24,6 +24,9 @@
             this._canvasSize = { x: 0, y: 0 };
         },
 
+        // @option minConstantScale: Number = true
+		// if the zoom is superior of minConstant Scale the icon will always be the normal size
+		
         setOptions: function(options) {
             L.setOptions(this, options);
             return this.redraw();
@@ -269,37 +272,42 @@
 
         _drawImage: function(marker, pointPos) {
             const iconOptions = marker.options.icon.options;
-
+            var scaleReduction=1;
+            if (this.options.minConstantScale && this._map._zoom<this.options.minConstantScale){
+            	scaleReduction=Math.pow(2, this.options.minConstantScale-this._map._zoom);
+            }
             if (!iconOptions.iconAnchor) {
                 iconOptions.iconAnchor = [0, 0];
             }
 
-            const xImage = pointPos.x - iconOptions.iconAnchor[0];
-            const yImage = pointPos.y - iconOptions.iconAnchor[1];
+            const xImage = pointPos.x - iconOptions.iconAnchor[0]/scaleReduction;
+            const yImage = pointPos.y - iconOptions.iconAnchor[1]/scaleReduction;
 
             if (this._debug) {
 
                 this._context.fillRect(
                     xImage ,
                     yImage ,
-                    iconOptions.iconSize[0],
-                    iconOptions.iconSize[1],
+                    iconOptions.iconSize[0]/scaleReduction,
+                    iconOptions.iconSize[1]/scaleReduction,
                 );
             }
-
+            if (typeof iconOptions.iconOpacity === "number"){
+            	this._context.globalAlpha = iconOptions.iconOpacity;
+            }
             this._context.drawImage(
                 marker._icon,
                 xImage,
                 yImage,
-                iconOptions.iconSize[0],
-                iconOptions.iconSize[1]
+                iconOptions.iconSize[0]/scaleReduction,
+                iconOptions.iconSize[1]/scaleReduction
             );
 
             if (marker.hasShadow) {
                 this._context.drawImage(
                     marker._shadowIcon,
-                    pointPos.x - iconOptions.shadowAnchor[0],
-                    pointPos.y - iconOptions.shadowAnchor[1],
+                    pointPos.x - iconOptions.shadowAnchor[0]/scaleReduction,
+                    pointPos.y - iconOptions.shadowAnchor[1]/scaleReduction,
                     iconOptions.shadowSize[0],
                     iconOptions.shadowSize[1]
                 );
@@ -313,16 +321,16 @@
 
                 switch (hasTooltip.options.direction) {
                     case "top":
-                        yDirectionOffset = -iconOptions.iconSize[1];
+                        yDirectionOffset = -iconOptions.iconSize[1]/scaleReduction;
                         break;
                     case "right":
-                        xDirectionOffset = iconOptions.iconSize[0];
+                        xDirectionOffset = iconOptions.iconSize[0]/scaleReduction;
                         break;
                     case "bottom":
-                        yDirectionOffset = iconOptions.iconSize[1];
+                        yDirectionOffset = iconOptions.iconSize[1]/scaleReduction;
                         break;
                     case "left":
-                        xDirectionOffset = -iconOptions.iconSize[0];
+                        xDirectionOffset = -iconOptions.iconSize[0]/scaleReduction;
                         break;
                 }
 
