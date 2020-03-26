@@ -14,11 +14,11 @@ var marker=L.marker([lat, lon],{icon:icon}));
 Add support for iconOpacity
 ```
 var icon = L.icon({ //add this new icon
-					iconUrl: url,
-					iconSize: [28, 42], // size of the icon
-					iconAnchor: [14,41], // point of the icon which will correspond to marker's location
-					iconOpacity: 0.7
-				  });
+                    iconUrl: url,
+                    iconSize: [28, 42], // size of the icon
+                    iconAnchor: [14,41], // point of the icon which will correspond to marker's location
+                    iconOpacity: 0.7
+                  });
 ```
 
 Add option minZoomConstantScale
