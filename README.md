@@ -4,7 +4,29 @@ Feel free to contribute
 
 ## Fork Differences
 Following features have been added for personal projects:
-Add support for Z-Index
+Add support for Z-Index  
+```
+var marker=L.marker([lat, lon],{icon:icon}));
+    marker.zIndex=0;
+```
+
+
+Add support for iconOpacity
+```
+var icon = L.icon({ //add this new icon
+                                iconUrl: url,
+                                iconSize:     [28, 42], // size of the icon
+                                iconAnchor:   [14,41], // point of the icon which will correspond to marker's location
+                                iconOpacity: 0.7
+                            });
+```
+
+Add option minZoomConstantScale
+if the zoom is inferior than this value the marker will scale accordingly to the zoom, if the zoom is supperior the marker will keep his size independently of the zoom.
+if this option is not defined the marker will keep his size for any zoom.
+```
+var iconLayer = L.canvasIconLayer({	minZoomConstantScale:10});
+```
 
 ## Demo
 
