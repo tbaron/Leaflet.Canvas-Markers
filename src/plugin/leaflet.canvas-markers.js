@@ -24,7 +24,7 @@
             this._canvasSize = { x: 0, y: 0 };
         },
 
-        // @option minConstantScale: Number = true
+        // @option minZoomConstantScale: Number = true
 		// if the zoom is superior of minConstant Scale the icon will always be the normal size
 		
         setOptions: function(options) {
@@ -273,8 +273,8 @@
         _drawImage: function(marker, pointPos) {
             const iconOptions = marker.options.icon.options;
             var scaleReduction=1;
-            if (this.options.minConstantScale && this._map._zoom<this.options.minConstantScale){
-            	scaleReduction=Math.pow(2, this.options.minConstantScale-this._map._zoom);
+            if (this.options.minZoomConstantScale && this._map._zoom<this.options.minZoomConstantScale){
+            	scaleReduction=Math.pow(2, this.options.minZoomConstantScale-this._map._zoom);
             }
             if (!iconOptions.iconAnchor) {
                 iconOptions.iconAnchor = [0, 0];
